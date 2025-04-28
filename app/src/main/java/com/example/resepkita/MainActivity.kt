@@ -71,6 +71,7 @@ import com.example.resepkita.ui.theme.ResepkitaTheme
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.ui.text.font.FontStyle
 
+
 // Modern App Color Scheme
 object ModernAppColors {
     val Primary = Color(0xFFF9A826)      // Warm Orange
@@ -271,8 +272,292 @@ val modernRecipes = listOf(
             "Wrap tightly and serve immediately."
         ),
         imageId = R.drawable.beefwellington
+    ), ModernRecipe(
+        id = 6,
+        name = "Classic Cheeseburger",
+        description = "Juicy beef patty with cheddar cheese, lettuce, tomato, and pickles.",
+        prepTime = "15 min",
+        cookTime = "10 min",
+        difficulty = "Medium",
+        tags = listOf(
+            RecipeTag("Main Course", ModernAppColors.AccentPink),
+            RecipeTag("Popular", ModernAppColors.AccentYellow)
+        ),
+        ingredients = listOf(
+            "1 lb ground beef",
+            "4 slices cheddar cheese",
+            "4 hamburger buns",
+            "Lettuce leaves",
+            "Tomato slices",
+            "Pickles",
+            "Salt and pepper to taste"
+        ),
+        steps = listOf(
+            "Season beef and form into patties.",
+            "Grill patties 4–5 minutes per side.",
+            "Top with cheese and let melt.",
+            "Assemble burgers with buns and toppings."
+        ),
+        imageId = R.drawable.cheeseburger,
+        authorName = "John Smith"
+    ),
+
+    ModernRecipe(
+        id = 7,
+        name = "Spaghetti Aglio e Olio",
+        description = "Simple and flavorful spaghetti with garlic, olive oil, and a touch of chili.",
+        prepTime = "5 min",
+        cookTime = "15 min",
+        difficulty = "Easy",
+        tags = listOf(
+            RecipeTag("Pasta", ModernAppColors.AccentBlue),
+            RecipeTag("Italian", ModernAppColors.AccentPink)
+        ),
+        ingredients = listOf(
+            "12 oz spaghetti",
+            "6 cloves garlic, thinly sliced",
+            "1/2 cup extra virgin olive oil",
+            "1 tsp red pepper flakes",
+            "Salt to taste",
+            "Fresh parsley, chopped",
+            "Grated Parmesan (optional)"
+        ),
+        steps = listOf(
+            "Cook spaghetti in salted boiling water until al dente. Reserve 1/2 cup pasta water, then drain.",
+            "While pasta cooks, heat olive oil in a large pan over medium heat.",
+            "Add garlic and red pepper flakes, cook until garlic is golden and fragrant.",
+            "Add the cooked spaghetti to the pan and toss to coat with oil and garlic.",
+            "If needed, add a splash of reserved pasta water to loosen the sauce.",
+            "Garnish with chopped parsley and Parmesan cheese if desired. Serve immediately."
+        ),
+        imageId = R.drawable.aglioolio,
+        authorName = "Emma Stone"
+    ),
+
+            ModernRecipe(
+        id = 8,
+        name = "Chicken Alfredo",
+        description = "Creamy Alfredo sauce over fettuccine and tender chicken.",
+        prepTime = "15 min",
+        cookTime = "20 min",
+        difficulty = "Medium",
+        tags = listOf(
+            RecipeTag("Pasta", ModernAppColors.AccentYellow),
+            RecipeTag("Comfort Food", ModernAppColors.AccentPink)
+        ),
+        ingredients = listOf(
+            "2 chicken breasts",
+            "12 oz fettuccine",
+            "1 cup heavy cream",
+            "1/2 cup butter",
+            "1 cup Parmesan cheese",
+            "Salt and pepper"
+        ),
+        steps = listOf(
+            "Cook fettuccine until al dente.",
+            "Cook chicken until golden and slice.",
+            "Melt butter, add cream, and simmer.",
+            "Mix in Parmesan and toss with pasta and chicken."
+        ),
+        imageId = R.drawable.chicken_alfredo,
+        authorName = "David Brown"
+    ),
+
+    ModernRecipe(
+        id = 9,
+        name = "Beef Tacos",
+        description = "Flavorful ground beef tucked in crispy taco shells with fresh toppings.",
+        prepTime = "15 min",
+        cookTime = "10 min",
+        difficulty = "Easy",
+        tags = listOf(
+            RecipeTag("Mexican", ModernAppColors.AccentPink),
+            RecipeTag("Quick", ModernAppColors.AccentYellow)
+        ),
+        ingredients = listOf(
+            "1 lb ground beef",
+            "1 packet taco seasoning",
+            "8 taco shells",
+            "Shredded lettuce",
+            "Diced tomatoes",
+            "Shredded cheese"
+        ),
+        steps = listOf(
+            "Cook beef and add taco seasoning.",
+            "Warm taco shells.",
+            "Fill shells with beef and toppings."
+        ),
+        imageId = R.drawable.beef_tacos,
+        authorName = "Carlos Mendez"
+    ),
+
+    ModernRecipe(
+        id = 10,
+        name = "Grilled Chicken Sandwich",
+        description = "Tender grilled chicken breast on a toasted bun with toppings.",
+        prepTime = "10 min",
+        cookTime = "15 min",
+        difficulty = "Easy",
+        tags = listOf(
+            RecipeTag("Sandwich", ModernAppColors.AccentPink),
+            RecipeTag("Healthy", ModernAppColors.AccentYellow)
+        ),
+        ingredients = listOf(
+            "2 chicken breasts",
+            "4 sandwich buns",
+            "Lettuce",
+            "Tomato slices",
+            "Mayonnaise",
+            "Salt and pepper"
+        ),
+        steps = listOf(
+            "Season and grill chicken breasts.",
+            "Toast buns lightly.",
+            "Assemble sandwich with toppings."
+        ),
+        imageId = R.drawable.grilled_chicken_sandwich,
+        authorName = "Emma Wilson"
+    ),
+
+    ModernRecipe(
+        id = 11,
+        name = "Mac and Cheese",
+        description = "Rich and creamy macaroni and cheese baked to perfection.",
+        prepTime = "15 min",
+        cookTime = "30 min",
+        difficulty = "Easy",
+        tags = listOf(
+            RecipeTag("Comfort Food", ModernAppColors.AccentYellow),
+            RecipeTag("Popular", ModernAppColors.AccentPink)
+        ),
+        ingredients = listOf(
+            "8 oz elbow macaroni",
+            "2 cups shredded cheddar cheese",
+            "1/2 cup milk",
+            "1/4 cup butter",
+            "1/4 cup flour",
+            "Salt and pepper"
+        ),
+        steps = listOf(
+            "Cook macaroni and drain.",
+            "Make roux with butter and flour, add milk and cheese.",
+            "Mix pasta with sauce and bake until bubbly."
+        ),
+        imageId = R.drawable.mac_and_cheese,
+        authorName = "James Anderson"
+    ),
+
+    ModernRecipe(
+        id = 12,
+        name = "Roast Beef Sandwich",
+        description = "Thinly sliced roast beef piled high with horseradish sauce.",
+        prepTime = "10 min",
+        cookTime = "0 min",
+        difficulty = "Easy",
+        tags = listOf(
+            RecipeTag("Sandwich", ModernAppColors.AccentPink),
+            RecipeTag("Classic", ModernAppColors.AccentBlue)
+        ),
+        ingredients = listOf(
+            "8 oz roast beef slices",
+            "4 sandwich rolls",
+            "Lettuce",
+            "Horseradish sauce",
+            "Pickles"
+        ),
+        steps = listOf(
+            "Spread horseradish sauce on rolls.",
+            "Layer beef, lettuce, and pickles.",
+            "Serve immediately."
+        ),
+        imageId = R.drawable.roast_beef_sandwich,
+        authorName = "William Johnson"
+    ),
+
+    ModernRecipe(
+        id = 13,
+        name = "BBQ Ribs",
+        description = "Tender, smoky ribs coated in tangy barbecue sauce.",
+        prepTime = "20 min",
+        cookTime = "2 hrs",
+        difficulty = "Hard",
+        tags = listOf(
+            RecipeTag("BBQ", ModernAppColors.AccentPink),
+            RecipeTag("American", ModernAppColors.AccentYellow)
+        ),
+        ingredients = listOf(
+            "2 racks pork ribs",
+            "1 cup barbecue sauce",
+            "Salt and pepper",
+            "Paprika",
+            "Garlic powder"
+        ),
+        steps = listOf(
+            "Season ribs with spices.",
+            "Bake covered for 1.5 hours.",
+            "Brush with barbecue sauce and grill briefly."
+        ),
+        imageId = R.drawable.bbq_ribs,
+        authorName = "Mike Carter"
+    ),
+
+    ModernRecipe(
+        id = 14,
+        name = "Clam Chowder",
+        description = "Creamy New England-style clam chowder with potatoes and bacon.",
+        prepTime = "20 min",
+        cookTime = "30 min",
+        difficulty = "Medium",
+        tags = listOf(
+            RecipeTag("Soup", ModernAppColors.AccentPink),
+            RecipeTag("Seafood", ModernAppColors.AccentBlue)
+        ),
+        ingredients = listOf(
+            "2 cups chopped clams",
+            "4 slices bacon",
+            "2 potatoes",
+            "1 onion",
+            "2 cups cream",
+            "2 cups clam juice"
+        ),
+        steps = listOf(
+            "Cook bacon, then sauté onion.",
+            "Add potatoes, clam juice, and cook until tender.",
+            "Stir in clams and cream; heat through."
+        ),
+        imageId = R.drawable.clam_chowder,
+        authorName = "Jessica Adams"
+    ),
+
+    ModernRecipe(
+        id = 15,
+        name = "Fried Chicken",
+        description = "Crispy, juicy Southern-style fried chicken.",
+        prepTime = "20 min",
+        cookTime = "20 min",
+        difficulty = "Medium",
+        tags = listOf(
+            RecipeTag("Main Course", ModernAppColors.AccentYellow),
+            RecipeTag("Comfort Food", ModernAppColors.AccentPink)
+        ),
+        ingredients = listOf(
+            "4 chicken thighs",
+            "1 cup buttermilk",
+            "2 cups flour",
+            "1 tsp paprika",
+            "Salt and pepper",
+            "Oil for frying"
+        ),
+        steps = listOf(
+            "Soak chicken in buttermilk.",
+            "Dredge in seasoned flour.",
+            "Fry until golden brown and cooked through."
+        ),
+        imageId = R.drawable.fried_chicken,
+        authorName = "Laura Johnson"
     )
-)
+
+    )
 
 @Composable
 fun ModernRecipeApp() {
@@ -405,16 +690,29 @@ fun ModernWelcomeScreen(onGetStartedClick: () -> Unit) {
 fun ModernHomeScreen(onRecipeClick: (Int) -> Unit) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
 
+    // Tfiltered recipes berdasarkan search
+    val filteredRecipes = if (searchQuery.isBlank()) {
+        modernRecipes
+    } else {
+        modernRecipes.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    }
+
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {},
-                actions = {},
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = ModernAppColors.Background,
-                    titleContentColor = ModernAppColors.TextPrimary
+            Column(modifier = Modifier.padding(bottom = 10.dp)) {
+                TopAppBar(
+                    title = {},
+                    actions = {},
+                    colors = TopAppBarDefaults.topAppBarColors(
+                        containerColor = Color(0xFFFFB74D),
+                        titleContentColor = ModernAppColors.TextPrimary
+
+                    )
+
                 )
-            )
+
+            }
+
         }
     ) { paddingValues ->
         Column(
@@ -422,13 +720,15 @@ fun ModernHomeScreen(onRecipeClick: (Int) -> Unit) {
                 .fillMaxSize()
                 .padding(paddingValues)
                 .padding(horizontal = 16.dp)
+
         ) {
             Text(
                 text = "What would you like to Cook?",
                 style = MaterialTheme.typography.headlineMedium.copy(
                     fontWeight = FontWeight.Bold
                 ),
-                color = ModernAppColors.TextPrimary
+                color = ModernAppColors.TextPrimary,
+                        modifier = Modifier.padding(top = 16.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -462,62 +762,78 @@ fun ModernHomeScreen(onRecipeClick: (Int) -> Unit) {
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Today's Recipe Section
-            Text(
-                text = "Today's recipe",
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = ModernAppColors.TextPrimary
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            // Horizontal Recipe Cards
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(end = 16.dp)
-            ) {
-                items(modernRecipes.take(2)) { recipe ->
-                    FeaturedRecipeCard(
-                        recipe = recipe,
-                        onClick = { onRecipeClick(recipe.id) }
-                    )
-                }
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // Recommended Section
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
+            if (searchQuery.isBlank()) {
+                // Tampilkan Today's Recipe dan Recommended HANYA kalau tidak mencari
                 Text(
-                    text = "Recommended",
+                    text = "Today's recipe",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = ModernAppColors.TextPrimary
                 )
 
-                Text(
-                    text = "See All",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = ModernAppColors.TextSecondary
-                )
+                Spacer(modifier = Modifier.height(12.dp))
+
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(end = 16.dp)
+                ) {
+                    items(modernRecipes.take(2)) { recipe ->
+                        FeaturedRecipeCard(
+                            recipe = recipe,
+                            onClick = { onRecipeClick(recipe.id) }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Recommended",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = ModernAppColors.TextPrimary
+                    )
+
+                    Text(
+                        text = "See All",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = ModernAppColors.TextSecondary
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(12.dp))
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
             // Vertical Recipe List
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(modernRecipes.drop(2)) { recipe ->
-                    RecipeListItem(
-                        recipe = recipe,
-                        onClick = { onRecipeClick(recipe.id) }
+            if (filteredRecipes.isEmpty()) {
+                // Kalau tidak ada resep ditemukan
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = "No recipes found yet.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = ModernAppColors.TextSecondary
                     )
+                }
+            } else {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(filteredRecipes) { recipe ->
+                        RecipeListItem(
+                            recipe = recipe,
+                            onClick = { onRecipeClick(recipe.id) }
+                        )
+                    }
                 }
             }
         }
@@ -683,7 +999,7 @@ fun ModernRecipeDetailScreen(recipe: ModernRecipe, onBackClick: () -> Unit) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Transparent,
+                    containerColor = Color(0xFFFFB74D),
                     navigationIconContentColor = Color.White
                 )
             )
@@ -751,10 +1067,27 @@ fun ModernRecipeDetailScreen(recipe: ModernRecipe, onBackClick: () -> Unit) {
                         }
 
                         Spacer(modifier = Modifier.height(24.dp))
+                        // Description section
+                        Text(
+                            text = "\uD83C\uDF74 Description :",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = ModernAppColors.TextPrimary
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Text(
+                            text = recipe.description, // Menampilkan deskripsi dari resep
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = ModernAppColors.TextSecondary
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp)) // Spacer sebelum Ingredients
 
                         // Ingredients section
                         Text(
-                            text = "Ingredients:",
+                            text = "\uD83C\uDF73 Ingredients :",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = ModernAppColors.TextPrimary
@@ -791,7 +1124,7 @@ fun ModernRecipeDetailScreen(recipe: ModernRecipe, onBackClick: () -> Unit) {
 
                         // Directions section
                         Text(
-                            text = "Directions:",
+                            text = "\uD83E\uDDD1\u200D\uD83C\uDF73 How to Cook :",
                             style = MaterialTheme.typography.titleMedium,
                             fontWeight = FontWeight.Bold,
                             color = ModernAppColors.TextPrimary
