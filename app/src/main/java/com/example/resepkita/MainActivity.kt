@@ -8,6 +8,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,38 +18,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -60,464 +45,634 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.foundation.layout.PaddingValues
-
-
-
-
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.resepkita.ui.theme.ResepkitaTheme
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.ui.text.font.FontStyle
+
+// Modern App Color Scheme
+object ModernAppColors {
+    val Primary = Color(0xFFF9A826)      // Warm Orange
+    val Secondary = Color(0xFF6AC692)    // Soft Green
+    val Background = Color(0xFFFAF9F6)   // Off-White
+    val TextPrimary = Color(0xFF2D2D2D)  // Almost Black
+    val TextSecondary = Color(0xFF767676) // Medium Gray
+    val AccentBlue = Color(0xFF5EBBF6)   // Light Blue
+    val AccentPink = Color(0xFFF797C8)   // Light Pink
+    val AccentYellow = Color(0xFFFFD166) // Mellow Yellow
+}
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ResepkitaTheme {
-                MyApp(modifier = Modifier.fillMaxSize())
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = ModernAppColors.Background
+                ) {
+                    ModernRecipeApp()
+                }
             }
         }
     }
 }
 
-data class Recipeku(
+data class RecipeTag(
     val name: String,
-    val desc: String,
-    val bahan: List<String>,
-    val recipeSteps : List<String>,
-    val pictureId: Int? = null
+    val color: Color,
+    val icon: Int? = null
 )
 
-val recipeMenu = listOf(
-    Recipeku(
-        name = "Spaghetti Carbonara",
-        desc = "A classic Italian pasta dish made with eggs, cheese, pancetta, and pepper.",
-        bahan = listOf(
-            "200g spaghetti",
-            "100g pancetta",
-            "2 eggs",
-            "50g grated Parmesan cheese",
-            "50g grated Pecorino cheese",
-            "Salt and pepper",
-            "Olive oil"
+data class ModernRecipe(
+    val id: Int,
+    val name: String,
+    val description: String,
+    val prepTime: String,
+    val cookTime: String,
+    val difficulty: String = "Medium",
+    val tags: List<RecipeTag> = emptyList(),
+    val ingredients: List<String>,
+    val steps: List<String>,
+    val imageId: Int,
+    val authorName: String? = null,
+    val rating: Float = 4.5f,
+    val reviewCount: Int = (10..200).random()
+)
+
+// Sample recipe data
+val modernRecipes = listOf(
+    ModernRecipe(
+        id = 1,
+        name = "Stuffed Chicken",
+        description = "Delicious chicken breasts stuffed with cheese and wrapped in bacon",
+        prepTime = "15 min",
+        cookTime = "40 min",
+        tags = listOf(
+            RecipeTag("Healthy", ModernAppColors.Secondary),
+            RecipeTag("Popular", ModernAppColors.AccentYellow),
+            RecipeTag("Low Carb", ModernAppColors.AccentBlue)
         ),
-        recipeSteps = listOf(
-            "Cook spaghetti according to package instructions.",
-            "Fry pancetta in olive oil until crispy.",
-            "Beat eggs and mix with Parmesan and Pecorino cheeses.",
-            "Combine spaghetti with pancetta and egg mixture.",
-            "Season with salt and pepper, then serve."
-        ),
-        pictureId = R.drawable.carbonara
-    ),
-    Recipeku(
-        name = "Beef Wellington",
-        desc = "A luxurious dish consisting of beef tenderloin coated with mushroom duxelles and wrapped in puff pastry.",
-        bahan = listOf(
-            "1 kg beef tenderloin",
-            "200g mushrooms",
-            "2 tbsp Dijon mustard",
-            "400g puff pastry",
-            "1 egg",
-            "Salt and pepper",
-            "Olive oil"
-        ),
-        recipeSteps = listOf(
-            "Sear beef in olive oil and brush with Dijon mustard.",
-            "Finely chop mushrooms and cook to make a duxelles.",
-            "Wrap beef in mushroom duxelles, then in puff pastry.",
-            "Brush with beaten egg and bake at 200°C for 40 minutes."
-        ),
-        pictureId = R.drawable.beefwellington
-    ),
-    Recipeku(
-        name = "Chicken Alfredo",
-        desc = "A creamy pasta dish with grilled chicken, garlic, butter, and Parmesan cheese.",
-        bahan = listOf(
-            "200g fettuccine",
-            "2 chicken breasts",
+        ingredients = listOf(
+            "4 boneless skinless chicken breasts",
+            "4 oz. cream cheese, softened",
+            "1/2 cup grated Parmesan",
             "2 cloves garlic, minced",
-            "100g butter",
-            "200ml heavy cream",
-            "50g Parmesan cheese",
-            "Salt and pepper"
+            "1 tsp. dried oregano",
+            "Salt and freshly ground black pepper",
+            "8 slices bacon"
         ),
-        recipeSteps = listOf(
-            "Cook fettuccine according to package instructions.",
-            "Grill chicken and slice into strips.",
-            "Melt butter in a pan, add garlic and cook until fragrant.",
-            "Add cream and Parmesan, simmer until thickened.",
-            "Combine with pasta and grilled chicken, season with salt and pepper."
+        steps = listOf(
+            "Preheat oven to 400°F. Line a large baking sheet with foil.",
+            "Cut a pocket into each chicken breast, then stuff with cream cheese mixture.",
+            "Wrap each chicken breast in 2 slices of bacon and secure with toothpicks.",
+            "Bake until chicken is cooked through, about 35-40 minutes.",
+            "If bacon isn't crispy enough, broil for 2-4 minutes more."
         ),
-        pictureId = R.drawable.chickenalfredo
+        imageId = R.drawable.carbonara
     ),
-    Recipeku(
-        name = "Caesar Salad",
-        desc = "A salad made with romaine lettuce, croutons, Parmesan cheese, and Caesar dressing.",
-        bahan = listOf(
-            "1 head romaine lettuce",
-            "100g croutons",
-            "50g Parmesan cheese",
-            "Caesar dressing",
-            "Salt and pepper"
+    ModernRecipe(
+        id = 2,
+        name = "Pasta Primavera",
+        description = "Fresh vegetables and pasta in a light creamy sauce",
+        prepTime = "10 min",
+        cookTime = "20 min",
+        tags = listOf(
+            RecipeTag("Vegetarian", ModernAppColors.Secondary),
+            RecipeTag("Quick", ModernAppColors.AccentPink)
         ),
-        recipeSteps = listOf(
-            "Tear lettuce into bite-sized pieces.",
-            "Toss lettuce with Caesar dressing.",
-            "Add croutons and Parmesan cheese on top.",
-            "Season with salt and pepper, then serve."
+        ingredients = listOf(
+            "8 oz. fettuccine pasta",
+            "1 cup broccoli florets",
+            "1 red bell pepper, sliced",
+            "1 yellow squash, sliced",
+            "2 tbsp olive oil",
+            "3 cloves garlic, minced",
+            "1/2 cup heavy cream",
+            "1/4 cup grated Parmesan"
         ),
-        pictureId = R.drawable.caesarsalad
+        steps = listOf(
+            "Cook pasta according to package directions.",
+            "Sauté vegetables in olive oil until tender-crisp.",
+            "Add garlic and cook for 30 seconds.",
+            "Stir in cream and bring to a simmer.",
+            "Toss with pasta and Parmesan cheese."
+        ),
+        imageId = R.drawable.chickenalfredo
     ),
-    Recipeku(
-        name = "Fish and Chips",
-        desc = "Crispy battered fish served with thick-cut fries and tartar sauce.",
-        bahan = listOf(
-            "2 white fish fillets",
-            "1 cup flour",
-            "1 egg",
-            "1 cup sparkling water",
-            "Potatoes for chips",
-            "Salt and pepper",
-            "Oil for frying"
+    ModernRecipe(
+        id = 3,
+        name = "Beef Stir Fry",
+        description = "Quick and flavorful beef with vegetables",
+        prepTime = "15 min",
+        cookTime = "10 min",
+        tags = listOf(
+            RecipeTag("Quick", ModernAppColors.AccentPink),
+            RecipeTag("High Protein", ModernAppColors.AccentBlue)
         ),
-        recipeSteps = listOf(
-            "Make batter by mixing flour, egg, and sparkling water.",
-            "Dip fish fillets in batter and fry in hot oil until crispy.",
-            "Cut potatoes into fries and fry until golden.",
-            "Serve fish with chips and tartar sauce."
+        ingredients = listOf(
+            "1 lb flank steak, thinly sliced",
+            "2 cups broccoli florets",
+            "1 red bell pepper, sliced",
+            "1 carrot, julienned",
+            "3 tbsp soy sauce",
+            "1 tbsp hoisin sauce",
+            "2 cloves garlic, minced",
+            "1 tbsp fresh ginger, grated"
         ),
-        pictureId = R.drawable.fishandchips
+        steps = listOf(
+            "Marinate beef in soy sauce, hoisin, garlic, and ginger.",
+            "Stir-fry beef in hot wok until browned, then remove.",
+            "Stir-fry vegetables until tender-crisp.",
+            "Return beef to wok and toss everything together.",
+            "Serve hot over steamed rice."
+        ),
+        imageId = R.drawable.beefwellington
+    ),
+    ModernRecipe(
+        id = 4,
+        name = "Muffins with Cocoa",
+        description = "Delicious chocolate muffins with cocoa cream topping",
+        prepTime = "20 min",
+        cookTime = "25 min",
+        difficulty = "Easy",
+        tags = listOf(
+            RecipeTag("Dessert", ModernAppColors.AccentPink),
+            RecipeTag("Popular", ModernAppColors.AccentYellow)
+        ),
+        ingredients = listOf(
+            "1 1/2 cups all-purpose flour",
+            "3/4 cup unsweetened cocoa powder",
+            "1 cup granulated sugar",
+            "1 tsp baking soda",
+            "1/2 tsp salt",
+            "1 cup buttermilk",
+            "1/2 cup vegetable oil",
+            "2 large eggs",
+            "2 tsp vanilla extract"
+        ),
+        steps = listOf(
+            "Preheat oven to 350°F. Line muffin tin with paper liners.",
+            "Whisk together dry ingredients in a large bowl.",
+            "In another bowl, mix wet ingredients until combined.",
+            "Fold wet ingredients into dry until just combined.",
+            "Fill muffin cups 2/3 full and bake for 20-25 minutes."
+        ),
+        imageId = R.drawable.fishandchips,
+        authorName = "Emma Stone"
+    ),
+    ModernRecipe(
+        id = 5,
+        name = "Beef Doner Wrap",
+        description = "Seasoned beef with fresh vegetables in a warm flatbread",
+        prepTime = "25 min",
+        cookTime = "15 min",
+        tags = listOf(
+            RecipeTag("Street Food", ModernAppColors.AccentYellow),
+            RecipeTag("Dinner", ModernAppColors.Secondary)
+        ),
+        ingredients = listOf(
+            "1 lb ground beef",
+            "2 tsp paprika",
+            "1 tsp cumin",
+            "1/2 tsp coriander",
+            "4 flatbreads or pitas",
+            "1 tomato, diced",
+            "1/2 cucumber, sliced",
+            "1/4 red onion, thinly sliced",
+            "Tzatziki sauce"
+        ),
+        steps = listOf(
+            "Mix beef with spices and form into a loaf.",
+            "Cook in oven at 375°F for 30-40 minutes.",
+            "Slice beef thinly and warm flatbreads.",
+            "Assemble wraps with meat, vegetables, and sauce.",
+            "Wrap tightly and serve immediately."
+        ),
+        imageId = R.drawable.beefwellington
     )
 )
 
-
 @Composable
-fun MyApp(modifier: Modifier = Modifier) {
-    var shouldShowOnboarding by rememberSaveable { mutableStateOf(true) }
+fun ModernRecipeApp() {
+    val navController = rememberNavController()
+    var showOnboarding by rememberSaveable { mutableStateOf(true) }
 
-    Surface(
-        modifier = modifier,
-        color = Color(0xFFF5F5DC)
-    ) {
-        if (shouldShowOnboarding) {
-            WelcomeScreen(onContinueClicked = { shouldShowOnboarding = false })
-        } else {
-            RecipeApp()
+    if (showOnboarding) {
+        ModernWelcomeScreen(onGetStartedClick = { showOnboarding = false })
+    } else {
+        NavHost(navController = navController, startDestination = "home") {
+            composable("home") {
+                ModernHomeScreen(
+                    onRecipeClick = { recipeId ->
+                        navController.navigate("recipe_detail/$recipeId")
+                    }
+                )
+            }
+            composable("recipe_detail/{recipeId}") { backStackEntry ->
+                val recipeId = backStackEntry.arguments?.getString("recipeId")?.toIntOrNull() ?: 1
+                val recipe = modernRecipes.find { it.id == recipeId }
+                recipe?.let {
+                    ModernRecipeDetailScreen(
+                        recipe = it,
+                        onBackClick = { navController.popBackStack() }
+                    )
+                }
+            }
         }
     }
 }
 
 @Composable
-fun WelcomeScreen(onContinueClicked: () -> Unit, modifier: Modifier = Modifier) {
-    Box(modifier = modifier
-        .fillMaxSize()
-        .background(Color(0xFFFFF9C4)) // Light yellow background color
+fun ModernWelcomeScreen(onGetStartedClick: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(ModernAppColors.Primary)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.bg),
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
+        // Decorative food illustrations floating around (represented here by circles)
+        Box(
+            modifier = Modifier
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.3f))
+                .align(Alignment.TopStart)
+                .padding(top = 80.dp, start = 40.dp)
+        )
+
+        Box(
+            modifier = Modifier
+                .size(30.dp)
+                .clip(CircleShape)
+                .background(Color.White.copy(alpha = 0.2f))
+                .align(Alignment.TopEnd)
+                .padding(top = 150.dp, end = 60.dp)
         )
 
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 128.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Gradient color for title text
-            Text(
-                text = "Resep Kita",
-                color = Color(0xFFFF5722),
-                fontSize = 56.sp,
-                fontWeight = FontWeight.Bold,
-
-            )
-            Spacer(modifier = Modifier.height(72.dp)) // Increased space for better layout
-            Image(
-                painter = painterResource(id = R.drawable.koki),
-                contentDescription = "Chef",
-                modifier = Modifier
-                    .size(220.dp), // Slightly larger logo for more impact
-                contentScale = ContentScale.Fit
-            )
-            Spacer(modifier = Modifier.height(8.dp)) // Adjusted space for better alignment
-            Text(
-                text = "The Ultimate Collection of Delicious Recipes", // Refined text
-                color = Color(0xFFFFEB3B),
-                fontSize = 18.sp, // Slightly larger for better readability
-                fontWeight = FontWeight.Medium,
-                fontStyle = FontStyle.Italic
-            )
-
-        }
-
-        Column(
-            modifier = Modifier
                 .fillMaxSize()
-                .padding(bottom = 172.dp),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Button(
-                onClick = onContinueClicked,
+            Image(
+                painter = painterResource(id = R.drawable.logs),
+                contentDescription = "Chef Illustration",
                 modifier = Modifier
-                    .width(340.dp) // Slightly wider button for a balanced look
+                    .size(200.dp)
+                    .clip(CircleShape)
+                    .background(Color.White)
+                    .padding(16.dp)
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "TASTORY",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "Discover delicious recipes for every occasion",
+                fontSize = 16.sp,
+                color = Color.White,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.padding(horizontal = 32.dp)
+            )
+
+            Spacer(modifier = Modifier.height(48.dp))
+
+            Button(
+                onClick = onGetStartedClick,
+                modifier = Modifier
+                    .fillMaxWidth()
                     .height(56.dp),
+                shape = RoundedCornerShape(28.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFFFFEB3B),
-                    contentColor = Color(0xFFFF5722)
-                ),
-                shape = RoundedCornerShape(13.dp) // Rounded corners for a modern look
+                    containerColor = Color.White,
+                    contentColor = ModernAppColors.Primary
+                )
             ) {
                 Text(
-                    text = "Explore Recipe",
-                    fontSize = 30.sp
+                    text = "Get Started",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold
                 )
             }
-        }
-    }
-}
 
+            Spacer(modifier = Modifier.height(32.dp))
 
-@Composable
-fun RecipeApp() {
-    val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "menu_list") {
-        composable("menu_list") {
-            ListRecipeScreen(
-                menuItems = recipeMenu,
-                onItemClick = { recipeku ->
-                    navController.navigate("recipe_detail/${recipeku.name}")
-                }
+            Text(
+                text = "PREMIUM RECIPES",
+                fontSize = 12.sp,
+                color = Color.White.copy(alpha = 0.7f),
+                letterSpacing = 2.sp
             )
-        }
-        composable("recipe_detail/{foodName}") { backStackEntry ->
-            val foodName = backStackEntry.arguments?.getString("foodName")
-            val foodItem = recipeMenu.find { it.name == foodName }
-            foodItem?.let {
-                DetailRecipeScreen(recipeItem = it, onBackClick = { navController.popBackStack() })
-            }
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListRecipeScreen(
-    menuItems: List<Recipeku>,
-    onItemClick: (Recipeku) -> Unit,
-    modifier: Modifier = Modifier
-) {
+fun ModernHomeScreen(onRecipeClick: (Int) -> Unit) {
     var searchQuery by rememberSaveable { mutableStateOf("") }
-    val filteredItems = menuItems.filter {
-        it.name.contains(searchQuery, ignoreCase = true)
-    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            "Resep Kita",
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Color.White
-                        )
-                    }
-                },
+                title = {},
+                actions = {},
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF4CAF50), // Changed to a fresh green
-                    titleContentColor = Color.White
+                    containerColor = ModernAppColors.Background,
+                    titleContentColor = ModernAppColors.TextPrimary
                 )
             )
         }
-    ) { padding ->
+    ) { paddingValues ->
         Column(
-            modifier = modifier
-                .padding(padding)
-                .padding(horizontal = 16.dp, vertical = 8.dp)
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)
+                .padding(horizontal = 16.dp)
         ) {
-            // Search Bar with Cooking Theme
+            Text(
+                text = "What would you like to Cook?",
+                style = MaterialTheme.typography.headlineMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = ModernAppColors.TextPrimary
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Search Bar
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
-                    .background(
-                        color = Color(0xFFF4F1EE), // Light cream color for a warm cooking feel
-                        shape = MaterialTheme.shapes.medium
-                    ),
-                placeholder = {
-                    Text(
-                        text = "Discover Recipes",
-                        style = MaterialTheme.typography.bodyMedium.copy(color = Color(0xFFB6A68D)) // Pakai bodyMedium
-                    )
-                },
+                    .clip(RoundedCornerShape(16.dp)),
+                placeholder = { Text("Search for your recipe") },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        tint = MaterialTheme.colorScheme.primary
+                        tint = ModernAppColors.TextSecondary
                     )
-                },
-                trailingIcon = {
-                    if (searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { searchQuery = "" }) {
-                            Icon(
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "Clear search",
-                                tint = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                    }
                 },
                 singleLine = true,
-                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                keyboardActions = KeyboardActions(onSearch = { /* Handle search action if needed */ }),
+                shape = RoundedCornerShape(16.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = Color(0xFFB6A68D),
-                    cursorColor = MaterialTheme.colorScheme.primary
+                    focusedBorderColor = ModernAppColors.TextSecondary.copy(alpha = 0.5f),
+                    unfocusedBorderColor = ModernAppColors.TextSecondary.copy(alpha = 0.3f),
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White
                 ),
-                shape = MaterialTheme.shapes.medium
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                keyboardActions = KeyboardActions(onSearch = { /* Handle search */ })
             )
 
-// Text below the search bar
+            Spacer(modifier = Modifier.height(24.dp))
+
+            // Today's Recipe Section
             Text(
-                text = "Here are some available recipes...",
-                style = MaterialTheme.typography.titleMedium.copy(
-                    color = Color(0xFF8C6B3F),
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
+                text = "Today's recipe",
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = ModernAppColors.TextPrimary
             )
 
+            Spacer(modifier = Modifier.height(12.dp))
 
-            // Menu Items
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+            // Horizontal Recipe Cards
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(end = 16.dp)
             ) {
-                if (filteredItems.isEmpty()) {
-                    item {
-                        Text(
-                            text = "Try searching again, no recipes found.",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                } else {
-                    items(filteredItems) { foodItem ->
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 8.dp),
-                        ) {
-                            ItemRecipe(foodItem = foodItem, onClick = { onItemClick(foodItem) })
-                        }
-                    }
+                items(modernRecipes.take(2)) { recipe ->
+                    FeaturedRecipeCard(
+                        recipe = recipe,
+                        onClick = { onRecipeClick(recipe.id) }
+                    )
                 }
             }
-        }
-    }
-}
 
+            Spacer(modifier = Modifier.height(24.dp))
 
-@Composable
-fun ItemRecipe(foodItem: Recipeku, onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(
-        color = Color(0xFFFFF9C4), // Ganti ke kuning muda
-        shape = RoundedCornerShape(12.dp), // Sedikit lebih membulat biar modern
-        shadowElevation = 4.dp, // Tambah shadow biar kesan "floating"
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = 6.dp, horizontal = 12.dp) // Padding lebih proporsional
-    ) {
-        Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
+            // Recommended Section
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                // Image Thumbnail
-                if (foodItem.pictureId != null) {
-                    Image(
-                        painter = painterResource(id = foodItem.pictureId),
-                        contentDescription = "Image of ${foodItem.name}",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(56.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                    )
-                } else {
-                    Box(
-                        modifier = Modifier
-                            .size(56.dp)
-                            .background(
-                                color = Color(0xFFFFF59D),
-                                shape = RoundedCornerShape(10.dp)
-                            ),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Text(
-                            text = foodItem.name.first().toString(),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color(0xFF2E7D32) // Hijau tua
-                        )
-                    }
-                }
-                Spacer(modifier = Modifier.width(16.dp))
                 Text(
-                    text = foodItem.name,
-                    style = MaterialTheme.typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold
-                    ),
-                    color = Color(0xFF2E7D32) // Hijau tua
+                    text = "Recommended",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = ModernAppColors.TextPrimary
+                )
+
+                Text(
+                    text = "See All",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = ModernAppColors.TextSecondary
                 )
             }
-            ElevatedButton(
-                onClick = onClick,
-                colors = ButtonDefaults.elevatedButtonColors(
-                    containerColor = Color(0xFFFF5722), // Oranye
-                    contentColor = Color.White
-                ),
-                shape = RoundedCornerShape(10.dp)
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Vertical Recipe List
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("Detail Recipe")
+                items(modernRecipes.drop(2)) { recipe ->
+                    RecipeListItem(
+                        recipe = recipe,
+                        onClick = { onRecipeClick(recipe.id) }
+                    )
+                }
             }
         }
     }
 }
 
+@Composable
+fun FeaturedRecipeCard(recipe: ModernRecipe, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier
+            .width(160.dp)
+            .height(200.dp)
+            .shadow(
+                elevation = 4.dp,
+                shape = RoundedCornerShape(16.dp)
+            ),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        onClick = onClick
+    ) {
+        Column {
+            Box(
+                modifier = Modifier
+                    .height(120.dp)
+                    .fillMaxWidth()
+            ) {
+                Image(
+                    painter = painterResource(id = recipe.imageId),
+                    contentDescription = recipe.name,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(12.dp)
+            ) {
+                Text(
+                    text = recipe.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "${recipe.prepTime} prep | ${recipe.cookTime} cooking",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = ModernAppColors.TextSecondary,
+                    maxLines = 1
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun RecipeListItem(recipe: ModernRecipe, onClick: () -> Unit) {
+    ElevatedCard(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(100.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 4.dp
+        ),
+        onClick = onClick
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Recipe Image
+            Image(
+                painter = painterResource(id = recipe.imageId),
+                contentDescription = recipe.name,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .width(100.dp)
+                    .fillMaxHeight()
+            )
+
+            // Recipe Information
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    text = recipe.name,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                if (recipe.authorName != null) {
+                    Text(
+                        text = "by ${recipe.authorName}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = ModernAppColors.TextSecondary
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "${recipe.prepTime} prep",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = ModernAppColors.TextSecondary
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Box(
+                        modifier = Modifier
+                            .size(4.dp)
+                            .clip(CircleShape)
+                            .background(ModernAppColors.TextSecondary.copy(alpha = 0.5f))
+                    )
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Text(
+                        text = "${recipe.reviewCount} reviews",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = ModernAppColors.TextSecondary
+                    )
+                }
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailRecipeScreen(recipeItem: Recipeku, onBackClick: () -> Unit) {
+fun ModernRecipeDetailScreen(recipe: ModernRecipe, onBackClick: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        recipeItem.name,
-                        style = MaterialTheme.typography.headlineSmall.copy(color = Color.White)
-                    )
-                },
+                title = { },
                 navigationIcon = {
                     IconButton(onClick = onBackClick) {
                         Icon(
@@ -528,143 +683,214 @@ fun DetailRecipeScreen(recipeItem: Recipeku, onBackClick: () -> Unit) {
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFFFF5722) // Oranye
+                    containerColor = Color.Transparent,
+                    navigationIconContentColor = Color.White
                 )
             )
         }
-    ) { paddingValues ->
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color(0xFFC8E6C9)), // Background hijau
-            contentPadding = PaddingValues(
-                top = paddingValues.calculateTopPadding() + 8.dp,
-                bottom = 16.dp,
-                start = 16.dp,
-                end = 16.dp
-            ),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            item {
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    shadowElevation = 6.dp,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    if (recipeItem.pictureId != null) {
+    ) { innerPadding ->
+        Box(modifier = Modifier.padding(innerPadding)) {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                // Hero Image
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(250.dp)
+                    ) {
                         Image(
-                            painter = painterResource(id = recipeItem.pictureId),
-                            contentDescription = "Image of ${recipeItem.name}",
+                            painter = painterResource(id = recipe.imageId),
+                            contentDescription = recipe.name,
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(220.dp)
-                                .clip(RoundedCornerShape(12.dp))
+                            modifier = Modifier.fillMaxSize()
                         )
-                    } else {
+
+                        // Gradient overlay for better text visibility
                         Box(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(220.dp)
+                                .fillMaxSize()
                                 .background(
-                                    color = Color(0xFFC8E6C9),
-                                    shape = RoundedCornerShape(12.dp)
-                                ),
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(
+                                            Color.Black.copy(alpha = 0.6f),
+                                            Color.Transparent,
+                                            Color.Transparent
+                                        )
+                                    )
+                                )
+                        )
+                    }
+                }
+
+                // Recipe Title and Info
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp)
+                            .padding(top = 16.dp)
+                    ) {
+                        Text(
+                            text = recipe.name,
+                            style = MaterialTheme.typography.headlineMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = ModernAppColors.TextPrimary
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Recipe tags
+                        LazyRow(
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            items(recipe.tags) { tag ->
+                                RecipeTagChip(tag = tag)
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        // Ingredients section
+                        Text(
+                            text = "Ingredients:",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = ModernAppColors.TextPrimary
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        recipe.ingredients.forEach { ingredient ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 4.dp),
+                                verticalAlignment = Alignment.Top
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(8.dp)
+                                        .clip(CircleShape)
+                                        .background(ModernAppColors.Primary)
+                                        .align(Alignment.CenterVertically)
+                                )
+
+                                Spacer(modifier = Modifier.width(12.dp))
+
+                                Text(
+                                    text = ingredient,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    color = ModernAppColors.TextSecondary
+                                )
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(24.dp))
+
+                        // Directions section
+                        Text(
+                            text = "Directions:",
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = ModernAppColors.TextPrimary
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                }
+
+                // Recipe steps
+                items(recipe.steps.size) { index ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 12.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(28.dp)
+                                .clip(CircleShape)
+                                .background(ModernAppColors.Primary),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "No Image Available",
-                                style = MaterialTheme.typography.titleMedium.copy(
-                                    color = Color(0xFF2E7D32)
-                                )
+                                text = "${index + 1}",
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
                             )
                         }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Text(
+                            text = recipe.steps[index],
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = ModernAppColors.TextSecondary,
+                            modifier = Modifier.padding(top = 4.dp)
+                        )
+                    }
+
+                    if (index < recipe.steps.size - 1) {
+                        HorizontalDivider(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 60.dp, end = 16.dp),
+                            thickness = 1.dp,
+                            color = ModernAppColors.TextSecondary.copy(alpha = 0.2f)
+                        )
                     }
                 }
-            }
 
-            item { SectionCard(title = "✨ About this Dish", text = recipeItem.desc) }
-            item { SectionCard(title = "\uD83D\uDED2 What You Need ", textList = recipeItem.bahan) }
-            item { SectionCard(title = "\t\uD83C\uDF73 How to Cook", textList = recipeItem.recipeSteps) }
+                // Bottom spacing
+                item {
+                    Spacer(modifier = Modifier.height(32.dp))
+                }
+            }
         }
     }
 }
 
-
-
 @Composable
-fun SectionCard(title: String, text: String? = null, textList: List<String>? = null) {
-    Surface(
-        shape = RoundedCornerShape(12.dp),
-        shadowElevation = 4.dp,
-        color = Color.White,
-        modifier = Modifier.fillMaxWidth()
+fun RecipeTagChip(tag: RecipeTag) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(tag.color.copy(alpha = 0.2f))
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF2E7D32)
-                )
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Teks biasa
-            text?.let {
-                Text(
-                    text = it,
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color(0xFF616161)
-                    )
-                )
-            }
-
-            // List teks (Ingredients atau Cooking Steps)
-            textList?.forEachIndexed { index, item ->
-                Text(
-                    text = "${index + 1}. $item",
-                    style = MaterialTheme.typography.bodyMedium.copy(
-                        color = Color(0xFF616161)
-                    ),
-                    modifier = Modifier.padding(bottom = 4.dp)
-                )
-            }
-        }
-    }
-}
-
-
-@Preview(showBackground = true, widthDp = 320)
-@Composable
-fun GreetingPreview() {
-    ResepkitaTheme {
-        RecipeApp()
+        Text(
+            text = tag.name,
+            style = MaterialTheme.typography.bodySmall,
+            color = tag.color
+        )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun RecipeAppPreview() {
+fun WelcomeScreenPreview() {
     ResepkitaTheme {
-        MyApp(Modifier.fillMaxSize())
+        ModernWelcomeScreen(onGetStartedClick = {})
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun OnboardingPreview() {
+fun HomeScreenPreview() {
     ResepkitaTheme {
-        WelcomeScreen(onContinueClicked = {})
+        ModernHomeScreen(onRecipeClick = {})
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun DetailRecipePreview() {
+fun RecipeDetailScreenPreview() {
     ResepkitaTheme {
-        DetailRecipeScreen(
-            recipeItem = recipeMenu[0],
+        ModernRecipeDetailScreen(
+            recipe = modernRecipes[0],  // Using the first recipe from the sample data
             onBackClick = {}
         )
     }
@@ -672,21 +898,31 @@ fun DetailRecipePreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ListRecipePreview() {
+fun RecipeTagChipPreview() {
     ResepkitaTheme {
-        ListRecipeScreen(
-            menuItems = recipeMenu,
-            onItemClick = {}
+        RecipeTagChip(
+            tag = RecipeTag("Healthy", ModernAppColors.Secondary)
         )
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun ItemRecipePreview() {
+fun FeaturedRecipeCardPreview() {
     ResepkitaTheme {
-        ItemRecipe(
-            foodItem = recipeMenu[0],
+        FeaturedRecipeCard(
+            recipe = modernRecipes[0],
+            onClick = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun RecipeListItemPreview() {
+    ResepkitaTheme {
+        RecipeListItem(
+            recipe = modernRecipes[2],
             onClick = {}
         )
     }
